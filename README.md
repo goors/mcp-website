@@ -18,16 +18,16 @@ A modern, production-ready full-stack developer workspace powered by Qwen 2.5 Co
 ### Installation
 
 Install the frontend dependencies:
-
+```bash
 corepack enable
 corepack prepare pnpm@10.12.4 --activate
 pnpm install --frozen-lockfile
-
+```
 ### Development
 
 Start the development server with HMR:
 
-pnpm run dev
+`pnpm run dev`
 
 Your application will be available at http://localhost:5173. Make sure your local FastAPI backend is running at http://127.0.0.1:8000.
 
@@ -35,7 +35,7 @@ Your application will be available at http://localhost:5173. Make sure your loca
 
 Create a production build:
 
-pnpm run build
+`pnpm run build`
 
 ## Deployment
 
@@ -43,7 +43,7 @@ pnpm run build
 
 To build and run using Docker:
 
-docker build -t mcp-website .
+`docker build -t mcp-website .`
 
 # Run the container
 docker run -p 3000:3000 mcp-website
