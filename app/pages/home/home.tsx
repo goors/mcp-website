@@ -230,8 +230,8 @@ export default function ChatPage() {
                 {messages.length === 0 ? (
                     <div className="w-full flex flex-col items-center justify-center text-center space-y-8 -mt-12">
                         <div className="space-y-3">
-                            <div className="text-4xl font-semibold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-[#8AB4F8] to-[#C58AF9]">
-                                Hello, Nikola
+                            <div className="text-3xl font-bold tracking-tight text-[#E3E3E3]">
+                                Hello, Guest
                             </div>
                             <p className="text-[#8E918F] text-sm">How can I help you code today?</p>
                         </div>
