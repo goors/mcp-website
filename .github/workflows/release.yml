@@ -1,0 +1,91 @@
+name: Release website
+
+on:
+  push:
+    # Publish `master` as Docker `latest` image.
+    branches:
+      - main
+
+    # Publish `v1.2.3` tags as releases.
+    tags:
+      - v*
+
+  # Run tests for any PRs.
+  pull_request:
+
+env:
+  # TODO: Change variable to your image's name.
+  IMAGE_NAME: mcp-website
+  BRANCH_NAME: main
+  REPO_NAME: shiny-flake
+  APP_NAME: mcp-website
+
+jobs:
+  build_and_push:
+
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+
+      - name: Set env to production
+        run: |
+          echo "PORT=4172" >> $GITHUB_ENV
+
+      - name: Log into registry
+        run: docker login -u pregmatch -p ${{ secrets.DOCKER_PASSWORD }} docker.io
+
+      - name: Build image
+        run: |
+          docker build . --file Dockerfile -t $IMAGE_NAME-$BRANCH_NAME
+
+      - name: Push image
+        run: |
+          docker tag $IMAGE_NAME-$BRANCH_NAME pregmatch/$REPO_NAME:$IMAGE_NAME-${{ github.sha }}
+          docker push pregmatch/$REPO_NAME:$IMAGE_NAME-${{ github.sha }}
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    needs: build_and_push
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install kubectl
+        run: |
+          curl -LO https://dl.k8s.io/release/v1.29.0/bin/linux/amd64/kubectl
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+
+      - name: Configure kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      # 4️⃣ Verify connectivity (this MUST work)
+      - name: Verify cluster access
+        run: |
+          echo "Kubeconfig server:"
+          kubectl get nodes
+
+      - name: Create / update Docker registry secret
+        run: |
+          kubectl create secret docker-registry ghsec \
+            --docker-server=docker.io \
+            --docker-username=pregmatch \
+            --docker-password="${{ secrets.DOCKER_PASSWORD }}" \
+            --docker-email=nikola@pregmatch.org \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Deploy application
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          envsubst < k8s/deployment.yaml > k8s/deployment-resolved.yaml
+          rm k8s/deployment.yaml
+          kubectl apply -f k8s/
