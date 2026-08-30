@@ -2,7 +2,7 @@
 
 A modern, production-ready full-stack developer workspace powered by Qwen 2.5 Coder 32B and Model Context Protocol (MCP), built with React Router, FastAPI, and local persistence.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/pregmatch/shiny-flake/tree/main)
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/goors/mcp-website/tree/main)
 
 ## Features
 
