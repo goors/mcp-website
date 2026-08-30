@@ -4,8 +4,5 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
-    server: {
-      allowedHosts: ["9d88e00ba551.ngrok-free.app"]
-    }
+  plugins: [tailwindcss(), reactRouter(), tsconfigPaths()]
 });
