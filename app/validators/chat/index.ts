@@ -1,0 +1,1 @@
+export {askModel, type AskModel, historyRecord, type HistoryRecord} from "./ask"
